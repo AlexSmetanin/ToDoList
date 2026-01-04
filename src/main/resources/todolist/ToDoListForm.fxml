@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="todolist.ToDoListController">
+   <children>
+      <Pane prefHeight="150.0" prefWidth="800.0" style="-fx-background-color: #FFFFFF;">
+         <children>
+            <TextField fx:id="taskTextField" layoutX="14.0" layoutY="30.0" prefHeight="37.0" prefWidth="770.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </TextField>
+            <Button fx:id="addButton" layoutX="15.0" layoutY="84.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="770.0" style="-fx-background-color: #006666;" text="Додати" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+      <Pane layoutY="150.0" prefHeight="650.0" prefWidth="800.0" style="-fx-background-color: #FFFFFF;">
+         <children>
+            <ScrollPane layoutX="14.0" layoutY="21.0" prefHeight="599.0" prefWidth="589.0" style="-fx-background-color: #FFFFFF;">
+               <content>
+                  <ListView fx:id="tasksListView" prefHeight="577.0" prefWidth="570.0" />
+               </content>
+            </ScrollPane>
+            <Button fx:id="deleteButton" layoutX="607.0" layoutY="21.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="179.0" style="-fx-background-color: #990033;" text="Видалити" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="updateButton" layoutX="607.0" layoutY="78.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="179.0" style="-fx-background-color: #006633;" text="Змінити" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
