@@ -1,6 +1,8 @@
 package todolist;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 import javafx.collections.FXCollections;
@@ -9,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ToDoListController {
+    ObservableList<String> tasks = FXCollections.observableArrayList();
 
     @FXML
     private ResourceBundle resources;
@@ -32,15 +35,27 @@ public class ToDoListController {
     private Button updateButton;
 
     @FXML
-    void initialize() {
-        ObservableList<String> tasks = FXCollections.observableArrayList();
-        tasksListView = new ListView<>(tasks);
+    void initialize() throws SQLException, ClassNotFoundException {
+        populateTaskList(); // заповнити список задач з БД
 
         addButton.setOnAction(actionEvent -> {
             addTask();
         });
     }
 
+    // Заповнення списку задач з бази даних
+    private void populateTaskList() throws SQLException, ClassNotFoundException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        ResultSet result = databaseHandler.getAllTasks();
+        tasks.clear();
+        while (result.next()) {
+            String task = result.getString("task_name");
+            tasks.add(task);
+        }
+        tasksListView.setItems(tasks);
+    }
+
+    // Додавання нової задачі в базу даних
     private void addTask() {
         String task_name = taskTextField.getText().trim();
         if (task_name.isEmpty()) {

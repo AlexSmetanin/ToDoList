@@ -1,9 +1,6 @@
 package todolist;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseHandler extends Configs {
     Connection dbConnection;
@@ -33,5 +30,12 @@ public class DatabaseHandler extends Configs {
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ResultSet getAllTasks() throws SQLException, ClassNotFoundException {
+        String select = "SELECT task_name FROM " + Const.TASK_TABLE;
+        PreparedStatement preparedStatement = getDbConnection().prepareStatement(select);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet;
     }
 }

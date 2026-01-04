@@ -12,6 +12,7 @@ public class ToDoListApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ToDoListApplication.class.getResource("ToDoListForm.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 800);
+        //scene.getStylesheets().add("style.css");
         stage.setTitle("ToDoList Application");
         stage.setResizable(false);
         stage.setScene(scene);
