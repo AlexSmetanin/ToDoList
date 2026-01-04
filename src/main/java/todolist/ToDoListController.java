@@ -1,12 +1,9 @@
 package todolist;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -46,7 +43,7 @@ public class ToDoListController {
 
     private void addTask() {
         String task_name = taskTextField.getText().trim();
-        if (task_name.equals("")) {
+        if (task_name.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Введіть назву задачі, будь ласка.", ButtonType.OK);
             alert.setTitle("Помилка при додаванні задачі");
             alert.setHeaderText("Назва задачі пуста!");
@@ -56,6 +53,10 @@ public class ToDoListController {
             Task task = new Task(task_name);
             databaseHandler.addTask(task);
             taskTextField.setText("");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Нова задача успішно додана!", ButtonType.CLOSE);
+            alert.setTitle("Додавання задачі");
+            alert.setHeaderText("Задачу додано!");
+            alert.showAndWait();
         }
     }
 }
