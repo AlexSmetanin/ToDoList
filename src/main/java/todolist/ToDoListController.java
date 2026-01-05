@@ -11,7 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ToDoListController {
-    ObservableList<String> tasks = FXCollections.observableArrayList();
+    private ObservableList<String> tasks = FXCollections.observableArrayList();
+    private String selectedTask;
 
     @FXML
     private ResourceBundle resources;
@@ -79,36 +80,50 @@ public class ToDoListController {
 
     // Додавання нової задачі в базу даних
     private void addTask() throws SQLException, ClassNotFoundException {
-        String task_name = taskTextField.getText().trim();
-        if (task_name.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Введіть назву задачі, будь ласка.", ButtonType.OK);
-            alert.setTitle("Помилка при додаванні задачі");
-            alert.setHeaderText("Назва задачі пуста!");
-            alert.showAndWait();
+        if (addButton.getText() == "Add") {
+            String task_name = taskTextField.getText().trim();
+            if (task_name.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введіть назву задачі, будь ласка.", ButtonType.OK);
+                alert.setTitle("Помилка при додаванні задачі");
+                alert.setHeaderText("Назва задачі пуста!");
+                alert.showAndWait();
+            } else {
+                DatabaseHandler databaseHandler = new DatabaseHandler();
+                Task task = new Task(task_name);
+                databaseHandler.addTask(task);
+                taskTextField.setText("");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Нова задача успішно додана!", ButtonType.CLOSE);
+                alert.setTitle("Додавання задачі");
+                alert.setHeaderText("Задачу додано!");
+                alert.showAndWait();
+                populateTaskList();
+            }
         } else {
-            DatabaseHandler databaseHandler = new DatabaseHandler();
-            Task task = new Task(task_name);
-            databaseHandler.addTask(task);
-            taskTextField.setText("");
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Нова задача успішно додана!", ButtonType.CLOSE);
-            alert.setTitle("Додавання задачі");
-            alert.setHeaderText("Задачу додано!");
-            alert.showAndWait();
-            populateTaskList();
+            update(); // виклик методу оновлення запису
         }
+
     }
 
     // Видалити задачу з бази даних
     private void deleteTask() throws SQLException, ClassNotFoundException {
-        String selectedTask = tasksListView.getSelectionModel().getSelectedItem();
+        selectedTask = tasksListView.getSelectionModel().getSelectedItem();
         if (selectedTask != null) {
-            DatabaseHandler databaseHandler = new DatabaseHandler();
-            databaseHandler.deleteTask(selectedTask);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Задача успішно видалена!", ButtonType.CLOSE);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Видалення задачі");
-            alert.setHeaderText("Задачу видалено!");
-            alert.showAndWait();
-            populateTaskList();
+            alert.setHeaderText(selectedTask);
+            alert.setContentText("Ви дійсно бажаєте видалити цю задачу?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                DatabaseHandler databaseHandler = new DatabaseHandler();
+                databaseHandler.deleteTask(selectedTask);
+                alert = new Alert(Alert.AlertType.INFORMATION, "Задача успішно видалена!", ButtonType.CLOSE);
+                alert.setTitle("Видалення задачі");
+                alert.setHeaderText("Задачу видалено!");
+                alert.showAndWait();
+                populateTaskList();
+            } else {
+                return;
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Спочатку оберіть задачу для видалення", ButtonType.OK);
             alert.setTitle("Помилка видалення задачі");
@@ -117,21 +132,12 @@ public class ToDoListController {
         }
     }
 
+    // Обробка натискання на кнопку "Оновити"
     private void updateTask() throws SQLException, ClassNotFoundException {
-        String selectedTask = tasksListView.getSelectionModel().getSelectedItem();
+        selectedTask = tasksListView.getSelectionModel().getSelectedItem();
         if (selectedTask != null) {
             taskTextField.setText(selectedTask);
             addButton.setText("Оновити");
-
-            DatabaseHandler databaseHandler = new DatabaseHandler();
-            databaseHandler.updateTask(selectedTask, taskTextField.getText());
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Задача успішно змінена!", ButtonType.CLOSE);
-            alert.setTitle("Релагування задачі");
-            alert.setHeaderText("Задачу змінено!");
-            alert.showAndWait();
-            populateTaskList();
-            addButton.setText("Додати");
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Спочатку оберіть задачу для редагування", ButtonType.OK);
             alert.setTitle("Помилка редагування задачі");
@@ -140,4 +146,17 @@ public class ToDoListController {
         }
     }
 
+    // Оновлення задачі в базі даних
+    private void update() throws SQLException, ClassNotFoundException {
+        String task = taskTextField.getText();
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        databaseHandler.updateTask(selectedTask, task);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Задача успішно змінена!", ButtonType.CLOSE);
+        alert.setTitle("Релагування задачі");
+        alert.setHeaderText("Задачу змінено!");
+        alert.showAndWait();
+        addButton.setText("Додати");
+        taskTextField.setText("");
+        populateTaskList();
+    }
 }
