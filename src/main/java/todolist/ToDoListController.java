@@ -80,7 +80,7 @@ public class ToDoListController {
 
     // Додавання нової задачі в базу даних
     private void addTask() throws SQLException, ClassNotFoundException {
-        if (addButton.getText() == "Add") {
+        if (addButton.getText().equals("Додати")) {
             String task_name = taskTextField.getText().trim();
             if (task_name.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Введіть назву задачі, будь ласка.", ButtonType.OK);
